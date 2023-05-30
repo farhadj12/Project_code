@@ -1,0 +1,60 @@
+#!/bin/bash
+
+HISTORY_FILE=".shell_history"
+
+if [[ -f $HISTORY_FILE ]]; then
+    history -r "$HISTORY_FILE"
+fi
+
+if [[ -f /home/bash_completion ]]; then
+    . /home/bash_completion
+fi
+
+shopt -s histappend
+HISTSIZE=1000
+HISTFILESIZE=2000
+
+while true; do
+    read -e -p "$ " input
+    history -s "$input"
+    command=$(echo "$input" | awk '{print $1}')
+    arguments=$(echo "$input" | awk '{$1=""; print $0}')
+    case "$command" in
+        cd)
+            cd "$arguments" ;;
+        ls)
+            ls $arguments ;;
+        cat)
+            cat $arguments ;;
+        rm)
+            rm -i $arguments ;;
+        pwd)
+            pwd ;;
+        mkdir)
+            mkdir -p $arguments ;;
+        exit)
+            break ;;
+        help)
+            echo "Available commands:"
+            echo "cd <directory>     Change directory"
+            echo "ls [options]       List files and directories"
+            echo "cat <file>         Display file contents"
+            echo "rm <file/directory> Remove files or directories"
+            echo "mkdir <directory>  Create a new directory"
+            echo "pwd                Print current working directory"
+            echo "exit               Exit the shell" ;;
+        *)
+
+            if command -v "$command" >/dev/null 2>&1; then
+                eval "$input"
+  
+            else
+
+                echo "Command not found: $command"
+
+            fi ;;
+
+    esac
+
+done
+
