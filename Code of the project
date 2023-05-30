@@ -3,10 +3,12 @@
 HISTORY_FILE=".shell_history"
 
 if [[ -f $HISTORY_FILE ]]; then
+
     history -r "$HISTORY_FILE"
 fi
 
 if [[ -f /home/bash_completion ]]; then
+
     . /home/bash_completion
 fi
 
@@ -19,6 +21,7 @@ while true; do
     history -s "$input"
     command=$(echo "$input" | awk '{print $1}')
     arguments=$(echo "$input" | awk '{$1=""; print $0}')
+    
     case "$command" in
         cd)
             cd "$arguments" ;;
